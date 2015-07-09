@@ -1,13 +1,12 @@
 #!/bin/bash
 
-readonly IMAGE="progrium/consul"
-
 main() {
 	local container_id="$1"; shift
 	local port="$1"; shift
 	local path="$1"; shift
 	local opts="$@"
-	
+
+	local image="$(docker inspect -f "{{.Config.Image}}" $container_id)"
 	local ip="$(docker inspect -f "{{.NetworkSettings.IPAddress}}" $container_id)"
 	local curl_cmd="curl \
 		--silent \
@@ -17,7 +16,7 @@ main() {
 		--retry 2 \
 		$opts \
 		http://$ip:$port$path > /dev/null"
-	docker run --rm --net container:$container_id --entrypoint "/bin/bash" $IMAGE -c "$curl_cmd"
+	docker run --rm --net container:$container_id --entrypoint "/bin/sh" $image -c "$curl_cmd"
 }
 
 main $@
