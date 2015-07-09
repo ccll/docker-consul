@@ -12,10 +12,10 @@ main() {
 		--silent \
 		--show-error \
 		--fail \
-		--dump-header /dev/stderr \
+		--include \
 		--retry 2 \
 		$opts \
-		http://$ip:$port$path > /dev/null"
+		http://$ip:$port$path"
 	docker run --rm --net container:$container_id --entrypoint "/bin/sh" $image -c "$curl_cmd"
 }
 
